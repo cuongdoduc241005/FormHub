@@ -1,0 +1,22 @@
+{
+  "name": "formhub",
+  "version": "1.0.0",
+  "description": "Xây dựng một hệ thống quản lý form đơn giản. Trong đó, Admin có quyền tạo các form với nhiều loại trường dữ liệu khác nhau, và Nhân viên SW sẽ điền thông tin vào các form đó theo thứ tự. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Cuong Do Duc",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mysql2": "^3.22.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
