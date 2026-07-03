@@ -40,7 +40,7 @@ const FormController = {
   // Lấy chi tiết form theo ID
   getById: async (req, res) => {
     try {
-      const form = await FormModel.getById(req.params.id);
+      const form = await FormModel.getById(req.params.formId);
 
       if (!form) {
         return res.status(404).json({
@@ -50,7 +50,7 @@ const FormController = {
       }
 
       // Lấy danh sách field thuộc form
-      const fields = await FieldModel.getByFormId(req.params.id);
+      const fields = await FieldModel.getByFormId(req.params.formId);
 
       return res.status(200).json({
         success: true,
@@ -70,7 +70,7 @@ const FormController = {
   // Cập nhật form
   update: async (req, res) => {
     try {
-      const form = await FormModel.getById(req.params.id);
+      const form = await FormModel.getById(req.params.formId);
 
       if (!form) {
         return res.status(404).json({
@@ -79,7 +79,7 @@ const FormController = {
         });
       }
 
-      await FormModel.update(req.params.id, req.body);
+      await FormModel.update(req.params.formId, req.body);
 
       return res.status(200).json({
         success: true,
@@ -96,7 +96,7 @@ const FormController = {
   // Xóa form
   delete: async (req, res) => {
     try {
-      const form = await FormModel.getById(req.params.id);
+      const form = await FormModel.getById(req.params.formId);
 
       if (!form) {
         return res.status(404).json({
@@ -105,7 +105,7 @@ const FormController = {
         });
       }
 
-      await FormModel.delete(req.params.id);
+      await FormModel.delete(req.params.formId);
 
       return res.status(200).json({
         success: true,
