@@ -22,7 +22,32 @@ const FormModel = {
     return result.insertId;
   },
 
-  // Cap nhat form
+  // Lấy danh sách tất cả form
+  getAll: async () => {
+    const [rows] = await db.query(`
+      SELECT *
+      FROM FORMS
+      ORDER BY FORM_ORDER ASC
+    `);
+
+    return rows;
+  },
+
+  // Lấy form theo ID
+  getById: async (id) => {
+    const [rows] = await db.query(
+      `
+      SELECT *
+      FROM FORMS
+      WHERE FORM_ID = ?
+      `,
+      [id],
+    );
+
+    return rows[0];
+  },
+
+  // Cập nhật form
   update: async (id, formData) => {
     const { title, description, order, status } = formData;
 
@@ -40,7 +65,7 @@ const FormModel = {
     );
   },
 
-  // Xoa form
+  // Xóa form
   delete: async (id) => {
     await db.query(
       `
@@ -49,30 +74,6 @@ const FormModel = {
       `,
       [id],
     );
-  },
-
-  // Lay danh sach form
-  getAll: async () => {
-    const [rows] = await db.query(`
-      SELECT *
-      FROM FORMS
-      ORDER BY FORM_ORDER ASC
-    `);
-
-    return rows;
-  },
-
-  // Lay form theo ID
-  getById: async (id) => {
-    const [rows] = await db.query(
-      `
-      SELECT *
-      FROM FORMS
-      WHERE FORM_ID = ?
-      `,
-      [id],
-    );
-    return rows[0];
   },
 };
 

@@ -6,7 +6,9 @@ project-root/
 │ ├── config/ // Cấu hình ứng dụng
 │ │ └── database.js // Thiết lập kết nối MySQL
 │ ├── routes/ // Khai báo các API endpoint và ánh xạ đến Controller
+│ │ └── form_routes.js
 │ ├── controllers/ // Tiếp nhận Request, gọi Service và trả về Response
+│ │ └── form_controller.js
 │ ├── services/ // Chứa Business Logic (nghiệp vụ của hệ thống)
 │ ├── models/ // Định nghĩa các thực thể và thao tác với cơ sở dữ liệu
 │ │ └── form_model.js
