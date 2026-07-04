@@ -14,8 +14,10 @@ project-root/
 │ ├── services/ // Chứa Business Logic (nghiệp vụ của hệ thống)
 │ ├── models/ // Định nghĩa các thực thể và thao tác với cơ sở dữ liệu
 │ │ ├── field_model
-│ │ └── form_model.js
+│ │ ├── form_model.js
+│ │ └── submission_model
 │ ├── validators/ // Kiểm tra tính hợp lệ của dữ liệu đầu vào
+│ │ └── submission_validator
 │ ├── middleware/ // Middleware (xác thực, xử lý lỗi, logging, ...)
 │ ├── utils/ // Các hàm tiện ích dùng chung
 │ └── app.js // Khởi tạo ứng dụng Express và cấu hình middleware

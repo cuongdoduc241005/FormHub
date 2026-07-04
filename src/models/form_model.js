@@ -25,8 +25,32 @@ const FormModel = {
   // Lấy danh sách tất cả form
   getAll: async () => {
     const [rows] = await db.query(`
-      SELECT *
+      SELECT
+        FORM_ID AS id,
+        FORM_TITLE AS title,
+        FORM_DESCRIPTION AS description,
+        FORM_ORDER AS \`order\`,
+        FORM_STATUS AS status,
+        FORM_CREATED_AT AS createdAt
       FROM FORMS
+      ORDER BY FORM_ORDER ASC
+    `);
+
+    return rows;
+  },
+
+  // Lấy danh sách form đang hoạt động
+  getActiveForms: async () => {
+    const [rows] = await db.query(`
+      SELECT
+        FORM_ID AS id,
+        FORM_TITLE AS title,
+        FORM_DESCRIPTION AS description,
+        FORM_ORDER AS \`order\`,
+        FORM_STATUS AS status,
+        FORM_CREATED_AT AS createdAt
+      FROM FORMS
+      WHERE FORM_STATUS = 'ACTIVE'
       ORDER BY FORM_ORDER ASC
     `);
 
@@ -37,7 +61,13 @@ const FormModel = {
   getById: async (id) => {
     const [rows] = await db.query(
       `
-      SELECT *
+      SELECT
+        FORM_ID AS id,
+        FORM_TITLE AS title,
+        FORM_DESCRIPTION AS description,
+        FORM_ORDER AS \`order\`,
+        FORM_STATUS AS status,
+        FORM_CREATED_AT AS createdAt
       FROM FORMS
       WHERE FORM_ID = ?
       `,

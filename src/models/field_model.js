@@ -1,85 +1,115 @@
-const FieldModel = require("../models/field.model");
-const FormModel = require("../models/form.model");
+const db = require("../config/database");
 
-const FieldController = {
-  // Tạo field mới cho form
-  create: async (req, res) => {
-    try {
-      const form = await FormModel.getById(req.params.formId);
+const FieldModel = {
+  // Thêm field mới vào form
+  create: async (formId, fieldData) => {
+    const { label, type, order, required, options } = fieldData;
 
-      if (!form) {
-        return res.status(404).json({
-          success: false,
-          message: "Không tìm thấy form",
-        });
-      }
+    const [result] = await db.query(
+      `
+      INSERT INTO FIELDS
+      (
+        FORM_ID,
+        FIELD_LABEL,
+        FIELD_TYPE,
+        FIELD_ORDER,
+        FIELD_REQUIRED,
+        FIELD_OPTIONS
+      )
+      VALUES (?, ?, ?, ?, ?, ?)
+      `,
+      [
+        formId,
+        label,
+        type,
+        order ?? 0,
+        required ? 1 : 0,
+        options ? JSON.stringify(options) : null,
+      ],
+    );
 
-      const fieldId = await FieldModel.create(req.params.formId, req.body);
+    return result.insertId;
+  },
 
-      return res.status(201).json({
-        success: true,
-        message: "Thêm field thành công",
-        fieldId,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
+  // Lấy danh sách field theo form
+  getByFormId: async (formId) => {
+    const [rows] = await db.query(
+      `
+      SELECT
+        FIELD_ID AS id,
+        FORM_ID AS formId,
+        FIELD_LABEL AS label,
+        FIELD_TYPE AS type,
+        FIELD_ORDER AS \`order\`,
+        FIELD_REQUIRED AS required,
+        FIELD_OPTIONS AS options
+      FROM FIELDS
+      WHERE FORM_ID = ?
+      ORDER BY FIELD_ORDER ASC
+      `,
+      [formId],
+    );
+
+    return rows;
+  },
+
+  // Lấy field theo ID
+  getById: async (id) => {
+    const [rows] = await db.query(
+      `
+      SELECT
+        FIELD_ID AS id,
+        FORM_ID AS formId,
+        FIELD_LABEL AS label,
+        FIELD_TYPE AS type,
+        FIELD_ORDER AS \`order\`,
+        FIELD_REQUIRED AS required,
+        FIELD_OPTIONS AS options
+      FROM FIELDS
+      WHERE FIELD_ID = ?
+      `,
+      [id],
+    );
+
+    return rows[0];
   },
 
   // Cập nhật field
-  update: async (req, res) => {
-    try {
-      const field = await FieldModel.getById(req.params.fieldId);
+  update: async (id, fieldData) => {
+    const { label, type, order, required, options } = fieldData;
 
-      if (!field) {
-        return res.status(404).json({
-          success: false,
-          message: "Không tìm thấy field",
-        });
-      }
-
-      await FieldModel.update(req.params.fieldId, req.body);
-
-      return res.status(200).json({
-        success: true,
-        message: "Cập nhật field thành công",
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
+    await db.query(
+      `
+      UPDATE FIELDS
+      SET
+        FIELD_LABEL = ?,
+        FIELD_TYPE = ?,
+        FIELD_ORDER = ?,
+        FIELD_REQUIRED = ?,
+        FIELD_OPTIONS = ?
+      WHERE FIELD_ID = ?
+      `,
+      [
+        label,
+        type,
+        order,
+        required ? 1 : 0,
+        options ? JSON.stringify(options) : null,
+        id,
+      ],
+    );
   },
 
   // Xóa field
-  delete: async (req, res) => {
-    try {
-      const field = await FieldModel.getById(req.params.fieldId);
-
-      if (!field) {
-        return res.status(404).json({
-          success: false,
-          message: "Không tìm thấy field",
-        });
-      }
-
-      await FieldModel.delete(req.params.fieldId);
-
-      return res.status(200).json({
-        success: true,
-        message: "Xóa field thành công",
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
+  delete: async (id) => {
+    await db.query(
+      `
+      DELETE FROM FIELDS
+      WHERE FIELD_ID = ?
+      `,
+      [id],
+    );
   },
 };
 
-module.exports = FieldController;
+module.exports = FieldModel;
