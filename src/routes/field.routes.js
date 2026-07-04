@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const FieldController = require("../controllers/field_controller");
+const FieldController = require("../controllers/field.controller");
 
 router.post("/:formId/fields", FieldController.create);
 router.put("/:formId/fields/:fieldId", FieldController.update);

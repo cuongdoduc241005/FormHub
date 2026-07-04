@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const FormController = require("../controllers/form_controller");
+const FormController = require("../controllers/form.controller");
 
 // CRUD Form
 router.post("/", FormController.create);
