@@ -1,4 +1,4 @@
-const SubmissionModel = require("../models/submission.model");
+const SubmissionModel = require("../models/submission_model");
 
 const SubmissionController = {
   // Lấy danh sách tất cả submission

@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const formRoutes = require("./routes/form.routes");
-const fieldRoutes = require("./routes/field.routes");
-const submissionRoutes = require("./routes/submission.routes");
+const formRoutes = require("./routes/form_routes");
+const fieldRoutes = require("./routes/field_routes");
+const submissionRoutes = require("./routes/submission_routes");
 
 const app = express();
 

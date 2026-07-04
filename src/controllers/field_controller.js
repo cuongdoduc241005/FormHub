@@ -1,5 +1,5 @@
-const FieldModel = require("../models/field.model");
-const FormModel = require("../models/form.model");
+const FieldModel = require("../models/field_model");
+const FormModel = require("../models/form_model");
 
 const FieldController = {
   // Tạo field mới cho form

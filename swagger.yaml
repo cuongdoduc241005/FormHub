@@ -1,0 +1,354 @@
+openapi: 3.0.3
+info:
+  title: FormHub RESTful API
+  description: RESTful API cho hệ thống quản lý FormHub
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local Server
+tags:
+  - name: Forms
+    description: Các API quản lý Form của Admin và Nhân viên
+  - name: Fields
+    description: Các API quản lý các trường (Field) trong Form
+  - name: Submissions
+    description: API quản lý kết quả nộp form
+
+paths:
+  #FORM ROUTES
+  /api/forms:
+    post:
+      tags:
+        - Forms
+      summary: Admin tạo form mới
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title: { type: string, example: "Form Khảo sát Nhân viên" }
+                description:
+                  {
+                    type: string,
+                    example: "Khảo sát chất lượng môi trường làm việc",
+                  }
+                order: { type: integer, example: 1 }
+                status:
+                  { type: string, enum: [ACTIVE, DRAFT], example: "ACTIVE" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  message: { type: string, example: "Tạo form thành công" }
+                  formId: { type: integer, example: 1 }
+        "500":
+          description: Internal Server Error
+
+    get:
+      tags:
+        - Forms
+      summary: Admin lấy danh sách tất cả form
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer, example: 1 }
+                        title:
+                          { type: string, example: "Form Khảo sát Nhân viên" }
+                        description:
+                          {
+                            type: string,
+                            example: "Khảo sát chất lượng môi trường làm việc",
+                          }
+                        order: { type: integer, example: 1 }
+                        status: { type: string, example: "ACTIVE" }
+        "500":
+          description: Internal Server Error
+
+  /api/forms/active:
+    get:
+      tags:
+        - Forms
+      summary: Nhân viên SW lấy danh sách form đang hoạt động
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer, example: 1 }
+                        title:
+                          { type: string, example: "Form Khảo sát Nhân viên" }
+                        description:
+                          {
+                            type: string,
+                            example: "Khảo sát chất lượng môi trường làm việc",
+                          }
+                        order: { type: integer, example: 1 }
+                        status: { type: string, example: "ACTIVE" }
+        "500":
+          description: Internal Server Error
+
+  /api/forms/{formId}:
+    get:
+      tags:
+        - Forms
+      summary: Lấy chi tiết 1 form theo formId (kèm field)
+      parameters:
+        - name: formId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+
+    put:
+      tags:
+        - Forms
+      summary: Admin cập nhật form
+      parameters:
+        - name: formId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  { type: string, example: "Form Khảo sát Nhân viên (Updated)" }
+                description:
+                  { type: string, example: "Nội dung đã được cập nhật" }
+                order: { type: integer, example: 2 }
+                status:
+                  { type: string, enum: [ACTIVE, DRAFT], example: "DRAFT" }
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+
+    delete:
+      tags:
+        - Forms
+      summary: Admin xóa form
+      parameters:
+        - name: formId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+
+  /api/forms/{formId}/submissions:
+    post:
+      tags:
+        - Forms
+      summary: Nhân viên SW submit form
+      parameters:
+        - name: formId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - answers
+              properties:
+                answers:
+                  type: object
+                  example:
+                    "1": "Nguyễn Văn A" # text
+                    "2": 85 # number
+                    "3": "2026-07-10" # date
+                    "4": "#1ABC9C" # color
+                    "5": "Phòng Kỹ thuật" # select
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  message: { type: string, example: "Submit form thành công" }
+                  submissionId: { type: integer, example: 1 }
+        "400":
+          description: Bad Request (Lỗi validation)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: false }
+                  message: { type: string, example: "Dữ liệu không hợp lệ" }
+                  errors: { type: array, items: { type: object } }
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+
+  # FIELD ROUTES
+  /api/forms/{formId}/fields:
+    post:
+      tags:
+        - Fields
+      summary: Admin thêm field vào form
+      parameters:
+        - name: formId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - label
+                - type
+              properties:
+                label: { type: string, example: "Họ và tên" }
+                type:
+                  {
+                    type: string,
+                    enum: [text, number, date, color, select],
+                    example: "text",
+                  }
+                order: { type: integer, example: 1 }
+                required: { type: boolean, example: true }
+                options:
+                  type: array
+                  items: { type: string }
+                  example: ["Lựa chọn 1", "Lựa chọn 2"]
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  message: { type: string, example: "Thêm field thành công" }
+                  fieldId: { type: integer, example: 1 }
+        "500":
+          description: Internal Server Error
+
+  /api/forms/{formId}/fields/{fieldId}:
+    put:
+      tags:
+        - Fields
+      summary: Admin cập nhật field trong form
+      parameters:
+        - name: formId
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: fieldId
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - label
+                - type
+              properties:
+                label: { type: string, example: "Phòng ban (Đã sửa)" }
+                type:
+                  {
+                    type: string,
+                    enum: [text, number, date, color, select],
+                    example: "select",
+                  }
+                order: { type: integer, example: 2 }
+                required: { type: boolean, example: false }
+                options:
+                  type: array
+                  items: { type: string }
+                  example: ["Phòng Kỹ thuật", "Phòng Nhân sự"]
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+
+    delete:
+      tags:
+        - Fields
+      summary: Admin xóa field khỏi form
+      parameters:
+        - name: formId
+          in: path
+          required: true
+          schema: { type: integer }
+        - name: fieldId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+
+  # SUBMISSION ROUTES
+  /api/submissions:
+    get:
+      tags:
+        - Submissions
+      summary: Xem lại danh sách các bài đã submit
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error

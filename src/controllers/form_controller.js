@@ -1,7 +1,7 @@
-const FormModel = require("../models/form.model");
-const FieldModel = require("../models/field.model");
-const SubmissionModel = require("../models/submission.model");
-const { validateSubmission } = require("../validators/submission.validator");
+const FormModel = require("../models/form_model");
+const FieldModel = require("../models/field_model");
+const SubmissionModel = require("../models/submission_model");
+const { validateSubmission } = require("../validators/submission_validator");
 
 const FormController = {
   // Tạo form mới

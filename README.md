@@ -4,7 +4,8 @@ project-root/
 │ └── schema.sql // Cấu trúc CSDL
 ├── src/ // Mã nguồn chính của hệ thống
 │ ├── config/ // Cấu hình ứng dụng
-│ │ └── database.js // Thiết lập kết nối MySQL
+│ │ ├── database.js // Thiết lập kết nối MySQL
+│ │ └── swagger.js
 │ ├── routes/ // Khai báo các API endpoint và ánh xạ đến Controller
 │ │ ├── field_routes
 │ │ ├── form_routes.js
